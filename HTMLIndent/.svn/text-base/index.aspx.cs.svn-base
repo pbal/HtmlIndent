@@ -1,0 +1,64 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.IO;
+
+public partial class About : System.Web.UI.Page
+{
+    public const string emailNotification = "goldwort@gmail.com";
+    protected void Page_Load(object sender, EventArgs e)
+    {
+      
+    }
+
+    public void timerTick(object sender, EventArgs e)
+    {
+        TimerPanel.Controls.Remove(TimerPanel.FindControl("PageLoadTimer"));
+        DataSet ds = GetComments();
+        Repeater1.DataSource = ds.Tables[0];
+        Repeater1.DataBind();
+    }
+
+    private DataSet GetComments()
+    {
+        var ds = new DataSet();
+        using (var conn = new SqlConnection(
+                             System.Configuration.ConfigurationManager.ConnectionStrings["ApplicationServices"].ToString()))
+        {
+            var da = new SqlDataAdapter("uspGetHtmlComments", conn);
+            da.Fill(ds);
+        }
+        return ds;
+    }
+    protected void btnSubmit_Click(object sender, EventArgs e)
+    {
+        Mail.SendMe(emailNotification, "", "", "Pure HTML Comments Email: ", txtcmtEmail.Text + "<hr>Name: " + txtName.Text +
+            "<hr>Comments: " + txtreview.Text);
+
+        using (var conn = new SqlConnection(
+                             System.Configuration.ConfigurationManager.ConnectionStrings["ApplicationServices"].ToString()))
+        {
+            var da = new SqlCommand("uspInsertComments", conn);
+            da.CommandType = CommandType.StoredProcedure;
+            da.Parameters.Add(new SqlParameter("@email", SqlDbType.VarChar) { Value = txtcmtEmail.Text });
+            da.Parameters.Add(new SqlParameter("@comments", SqlDbType.VarChar) { Value = txtreview.Text });
+            da.Parameters.Add(new SqlParameter("@name", SqlDbType.VarChar) { Value = txtName.Text });
+            conn.Open();
+            var i = da.ExecuteNonQuery();
+        }
+        Response.Redirect("index.aspx");
+    }
+    private void Page_Error(object sender, EventArgs e)
+    {
+        // Get last error from the server
+        Exception exc = Server.GetLastError();
+        Mail.SendMe(emailNotification, "", "", "Pure HTML Comments Error", exc.Message + "<br><br><hr>" +
+            txtcmtEmail.Text + "Name: " + txtName.Text +
+            "<hr>Comments: " + txtreview.Text + "<hr><br>" + exc.StackTrace);
+    }
+}

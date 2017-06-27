@@ -1,0 +1,67 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Data;
+using System.Data.SqlClient;
+using System.Text;
+
+/// <summary>
+/// Summary description for util
+/// </summary>
+public class util
+{
+    public static IEnumerable<char> GetCapitalAlphabet()
+    {
+        for (char c = 'A'; c <= 'Z'; c++)
+        {
+            yield return c;
+        }
+    }
+
+    public static IEnumerable<char> GetLowerAlphabet()
+    {
+        for (char c = 'a'; c <= 'z'; c++)
+        {
+            yield return c;
+        }
+    }
+
+    public static void DBNull(string input, string ip, string page, bool css, bool script,
+        bool compress, int spaces)
+    {
+        if (input.Length > 100)
+            input = input.Substring(0, 100);
+
+        using (var conn = new SqlConnection(
+                             System.Configuration.ConfigurationManager.ConnectionStrings["ApplicationServices"].ToString()))
+        {
+            var da = new SqlCommand("usp_insertForHTML", conn);
+            da.CommandType = CommandType.StoredProcedure;
+            da.Parameters.Add(new SqlParameter("@ip", SqlDbType.VarChar) { Value = ip });
+            da.Parameters.Add(new SqlParameter("@input", SqlDbType.VarChar) { Value = input });
+            da.Parameters.Add(new SqlParameter("@page", SqlDbType.VarChar) { Value = page });
+            da.Parameters.Add(new SqlParameter("@css", SqlDbType.Bit) { Value = css });
+            da.Parameters.Add(new SqlParameter("@script", SqlDbType.Bit) { Value = script });
+            da.Parameters.Add(new SqlParameter("@compress", SqlDbType.Bit) { Value = compress });
+            da.Parameters.Add(new SqlParameter("@spaces", SqlDbType.Int) { Value = spaces });
+            conn.Open();
+            var i = da.ExecuteNonQuery();
+        }
+    }
+
+    public static string GetTagName(StringBuilder r, bool bClosingTag)
+    {
+        var ar = r.ToString().Split(' ', '=', '\r');
+        return !bClosingTag ? ar[0].Trim('<', '>', ' ') : ar[ar.Length - 1].TrimEnd('>').TrimStart('<', '/', '\\');
+    }
+    public static string AddSpace(int spaceCount, int indentLevel)
+    {
+        var tabLength = string.Empty;
+        for (int i = 0; i < spaceCount * indentLevel; i++)
+        {
+            tabLength += " ";
+        }
+        return tabLength;
+    }
+}

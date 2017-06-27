@@ -1,0 +1,20 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
+    CodeFile="Css.aspx.cs" Inherits="FormatCss" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="Server">
+    <h2>
+        Format CSS</h2>
+    <br />
+    <asp:TextBox ID="txtInput" runat="server" TextMode="MultiLine" Style="width: 100%;
+        height: 300px; overflow: scroll" Wrap="False"></asp:TextBox>
+    <div class="right">
+        <asp:LinkButton ID="LinkButton1" class="splash_button" runat="server" OnClick="Button1_Click"><span class="splash_button_pad">Format my code</span>
+        </asp:LinkButton></div> 
+    <div>
+        <p>
+            Hit the 'Format this' button to format your multi line CSS to single line properties.
+        </p>
+    </div>
+</asp:Content>

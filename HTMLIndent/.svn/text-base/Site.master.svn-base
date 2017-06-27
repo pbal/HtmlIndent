@@ -1,0 +1,82 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site.master.cs" Inherits="SiteMaster" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head runat="server">
+    <title>HTML Formater</title>
+    <meta name="robots" content="all" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="rating" content="general" />
+    <%--<meta name="copyright" content="" />--%>
+    <meta name="Keywords" content="Format, Clean, Indent, HTML, Javascript, CSS, Free, Online, application" />
+    <meta name="Description" content="A free web application which indents and formats HTML code.
+     It can be used on source code containing css, Javascript, HTML and HTML containing programming languages." />
+    <meta name="language" content="en" />
+    <link href="~/Styles/Site.css" rel="stylesheet" type="text/css" />
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server">
+    </asp:ContentPlaceHolder>
+    <meta name="Author" content="pukhraj" />
+    <meta name="robots" content="index,follow" />
+    <meta name="revisit-after" content="5 days" />
+</head>
+<body>
+    <form runat="server">
+    <asp:ScriptManager ID="ScriptManager1" runat="server">
+    </asp:ScriptManager>
+    <div class="page">
+        <div class="header">
+            <div class="title">
+                <h1>
+                    <asp:HyperLink NavigateUrl="~/index.aspx" runat="server">Pure HTML</asp:HyperLink>
+                </h1>
+            </div>
+            <div class="clear hideSkiplink ">
+                <div class="menu">
+                    <ul>
+                        <li>
+                            <asp:HyperLink NavigateUrl="~/index.aspx" runat="server">Home</asp:HyperLink></li>
+                        <li>
+                            <asp:HyperLink NavigateUrl="~/Format/HTML.aspx" runat="server">Format HTML</asp:HyperLink></li>
+                        <%-- <li>
+                            <asp:HyperLink NavigateUrl="~/Format/Css.aspx" runat="server">Format Css</asp:HyperLink></li>
+                        --%>
+                        <li>
+                            <asp:HyperLink NavigateUrl="~/Format/JavaScript.aspx" runat="server">Format Javascript</asp:HyperLink></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="main">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+        </div>
+        <div class="clear">
+        </div>
+        <div class="footer">
+            <div class="left" style="margin-left: 20px">
+                <g:plusone size="small" annotation="inline"></g:plusone>
+            </div>
+            <div class="right" style="margin-right: 20px">
+                Code by <a href="mailto:pukhraj_88@yahoo.com">Pukhraj Bal</a>
+            </div>
+            <div class="push">
+            </div>
+        </div>
+    </div>
+    <div class="push">
+    </div>
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-28154397-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script>
+    </form>
+</body>
+</html>

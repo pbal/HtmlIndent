@@ -1,0 +1,233 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>HTML Indent and Formating Tool</title>
+    <meta name="robots" content="all" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="rating" content="general" />
+    <meta name="Keywords" content="Format, Clean, Indent, HTML, Javascript, CSS, Free, Online, application" />
+    <meta name="Description" content="A free web application which indents and formats HTML code. It can be used on source code containing css, Javascript, HTML and HTML containing programming languages." />
+    <meta name="language" content="en" />
+    <link href="Styles/Site.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">        .style1 {
+            display: inline-block;
+            margin: 10px auto;
+            border: 1px solid #cdcdcd;
+            padding: 5px;
+            background-color: #efefef;
+            text-align: center;
+        }
+
+    </style>
+    <meta name="Author" content="pukhraj" />
+    <meta name="robots" content="index,follow" />
+    <meta name="revisit-after" content="5 days" />
+</head>
+<body>
+    <form name="aspnetForm" method="post" action="index.aspx" id="aspnetForm">
+        <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTExNzc2Mjk5NjdkZLPQrR8DLk40JXEe25GVFIIpTz09" />
+
+        <script src="/ScriptResource.axd?d=3jRlW5fXE3qEajGlxoorYrmNWuzRZ8yYPv2JyKUJR86evdaia9TR-ZVQwroagF8aabfQoMV-xCayRbNjXc9buIv7NLAZoxFQXssrKcr_vv3kqjhk2I8P3r0gG1QgrG__TE6YZxXITFYEZHHWvYiHSgviZl41&amp;t=ffffffffdedc7f49" type="text/javascript"></script>
+
+        <script src="/ScriptResource.axd?d=llINFkpimP3oyVVlNjZ8MMVBfB3riQJWlH8j8RaKFy_zFSUZUi0RmK4pimkKCXiYvRc7XiNzvQWD80-oX4WB1ALa4kcOhQ4yKajQWnTZ8sZOBkRYYLM5ABkE3W9od1LTcGZxU-5OcTuv8FH9xwv3-SnvqWo1&amp;t=ffffffffdedc7f49" type="text/javascript"></script>
+
+        <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWBQKJ0Oa4DQKX08/vCwKm7L7eBgLfuMjQBwL25qnqCNBtR/3+jAl623vO2fR9zvbEQdTa" />
+        <div class="page">
+            <div class="header">
+                <div class="title">
+                    <h1>
+                        <a href="index.aspx">
+                            Pure HTML
+                        </a>
+                    </h1>
+                </div>
+                <div class="clear hideSkiplink ">
+                    <div class="menu">
+                        <ul>
+                            <li>
+                                <a href="index.aspx">
+                                    Home
+                                </a>
+                            </li>
+                            <li>
+                                <a href="Format/HTML.aspx">
+                                    Format HTML
+                                </a>
+                            </li>
+                            <li>
+                                <a href="Format/JavaScript.aspx">
+                                    Format Javascript
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="main">
+                <h2>
+                    HTML Indenting Tool
+                </h2>
+                <div style="width: 700px">
+                    <p>
+                        This tool indents HTML source in a way which improves readability and understanding of tags. This 
+                        helps in differentiating between deeply nested tags and identifying child tags in a parent tag.
+                    </p>
+                    <p>
+                        You can indent HTML source file containing JavaScript, Style tags and programming tags of php and 
+                        asp. This application delivers neatly tabbed code with fastest performance compared some of other popular 
+                        HTML formating tools. You can try cleaning up untidy HTML source of
+                        <a title="Click this link to open source in new tab"
+                href="view-source:http://www.google.com" target="_blank">
+                            Google
+                        </a>
+                        and lengthy code such as of
+                        <a href="view-source:http://www.dailymail.co.uk" target="_blank"
+                title="Click this link to open source in new tab">
+                            Daily Mail
+                        </a>
+                        .
+                    </p>
+                    Some of the things which this application does pretty well:
+                    <ul>
+                        <li>
+                            Indents HTML tags
+                        </li>
+                        <li>
+                            Indents HTML files containing php and asp code
+                        </li>
+                        <li>
+                            Indents CSS
+                        </li>
+                        <li>
+                            Indents Javascript
+                        </li>
+                        <li>
+                            Replaces ASCII values for symbols.
+                        </li>
+                        <li>
+                            Creates text blocks for lengthy content
+                        </li>
+                    </ul>
+                    <br />
+                    <p class="style1  ">
+                        <img alt="html indented code vs untidy code" src="sample.jpg" />
+                    </p>
+                    <div class="clear"></div>
+                    <p>
+                        Feel free to
+                        <a href="Format/HTML.aspx">
+                            abuse this app
+                        </a>
+                        and share comments. Happy indenting!!
+                    </p>
+                    <div style="clear: both"></div>
+                    <div>
+                        <h3 style="background-color: #efefef; border-bottom: 1px solid #cdcdcd; margin: 20px 0">
+                            Comments
+                        </h3>
+                        <div style="clear: both"></div>
+                        <div id="ctl00_MainContent_MyUpdatePanel">
+                            <div id="ctl00_MainContent_TimerPanel">
+                                <span id="ctl00_MainContent_PageLoadTimer" style="display:none;"></span>
+                            </div>
+                            <div id="ctl00_MainContent_PageProgressIndicator" style="display:none;">
+                                <p>
+                                    Loading comments...
+                                </p>
+                            </div>
+                        </div>
+                        <div style="clear: both"></div>
+                        <table width="100%" id="review">
+                            <tr>
+                                <td width="110px">
+                                    Name
+                                </td>
+                                <td>
+                                    <input name="ctl00$MainContent$txtName" type="text" id="ctl00_MainContent_txtName" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="110px">
+                                    Email
+                                </td>
+                                <td>
+                                    <input name="ctl00$MainContent$txtcmtEmail" type="text" id="ctl00_MainContent_txtcmtEmail" />
+                                    &nbsp;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top">
+                                    Comments
+                                    <br />
+                                </td>
+                                <td>
+                                    <textarea name="ctl00$MainContent$txtreview" rows="2" cols="20" id="ctl00_MainContent_txtreview" class="zn"></textarea>
+                                    <br />
+                                    &nbsp;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top"></td>
+                                <td>
+                                    <a id="ctl00_MainContent_btnSubmit" class="splash_button" href="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$MainContent$btnSubmit&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, true))">
+                                        <span class="splash_button_pad">
+                                            Submit Comments
+                                        </span>
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+            <div class="footer">
+                <div class="left" style="margin-left: 20px">
+                    <g:plusone size="small" annotation="inline"></g:plusone>
+                </div>
+                <div class="right" style="margin-right: 20px">
+                    Code by
+                    <a href="mailto:pukhraj_88@yahoo.com">
+                        Pukhraj Bal
+                    </a>
+                </div>
+                <div class="push"></div>
+            </div>
+        </div>
+        <div class="push"></div>
+
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-28154397-1']);
+            _gaq.push(['_trackPageview']);
+            (function ()
+            {
+                var ga = document.createElement('script');
+                ga.type = 'text/javascript';
+                ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(ga, s);
+            }
+            )();
+        </script>
+
+        <script type="text/javascript">
+            //<![CDATA[
+            Sys.Application.initialize();
+            Sys.Application.add_init(function()
+            {
+                $create(Sys.UI._Timer,
+                {
+                    "enabled":true,"interval":1,"uniqueID":"ctl00$MainContent$PageLoadTimer"
+                }
+                , null, null, $get("ctl00_MainContent_PageLoadTimer"));
+            });
+            //]]>
+        </script>
+
+    </form>
+</body>
+</html>
+<!-- Served by PureHtml. For more info visit www.puerhtml.in -->

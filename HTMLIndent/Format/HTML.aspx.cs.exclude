@@ -1,0 +1,568 @@
+﻿using System;
+using System.Diagnostics;
+using System.Collections;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Text;
+using System.Data;
+using System.Data.SqlClient;
+using System.Net;
+using System.Web;
+
+public partial class _1 : System.Web.UI.Page
+{
+    //public const string TabStart = "&#60;";
+    //public const string TabEnd = "&#62;";
+    //public const string Raquo = "&raquo;";
+    //public const string htmlRegex = "(<[^-'1234567890\">= ]+(?:\"[^\"]+\")*[^>]+>)";
+    public const string emailNotification = "goldwort@gmail.com";
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!Page.IsPostBack)
+        {
+            drpIndentSpaces.SelectedValue = "4";
+        }
+    }
+
+
+    private string BlockText(int indentLevel, string r, bool content)
+    {
+        var spli = r.ToString().Trim().Split(' ');
+        var sb = new StringBuilder();
+        var output = new StringBuilder();
+        output.Append(((content) ? AddTab(indentLevel) : ""));
+
+        for (int i = 0; i < spli.LongLength; i++)
+        {
+            var s = spli[i];
+            if (string.IsNullOrEmpty(s.Trim())) continue;
+
+            if ((sb.ToString().Trim().Length + s.Length < 100))
+            {
+                sb.Append(s);
+                if (i + 1 < spli.LongLength)
+                    sb.Append(" ");
+            }
+            else
+            {
+                output.Append(sb.Append("\r\n" + AddTab(indentLevel) + s + " "));
+                sb.Remove(0, sb.Length);
+            }
+        }
+        output.Append(sb);
+        return output.ToString();
+    }
+
+    private string AddTab(int indentLevel)
+    {
+        return util.AddSpace(Int32.Parse(drpIndentSpaces.SelectedValue), indentLevel);
+    }
+    private string Compress(string input)
+    {
+        var output = new StringBuilder(input.Replace("\r\n", "").Replace("\t", ""));
+
+        return RemoveDoubleWhiteSpace(output.ToString());
+    }
+
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            util.DBNull(txtInput.Text,
+                Request.UserHostAddress.ToString(),
+                "HTML",
+                chkFormatCss.Checked,
+                chkFormatJavascript.Checked,
+                chkCompress.Checked, Int32.Parse(drpIndentSpaces.SelectedValue)
+                );
+        }
+        catch (Exception)
+        { }
+        var st = new Stopwatch();
+        st.Start();
+        if (chkCompress.Checked)
+        {
+            txtInput.Text = Compress(txtInput.Text);
+            txtInput.Wrap = true;
+            Encoding encodings = Encoding.UTF8;
+            lblSize.Text = "Code size : <font color='red'>" + (encodings.GetByteCount(txtInput.Text) / 1000).ToString("#,##0") + " Kb</font>";
+            Label3.Text = "Processing Time : <font color='red'>" + st.ElapsedMilliseconds + " ms</font>";
+            return;
+        }
+
+        txtInput.Wrap = false;
+        var indentLevel = 0;
+        var inputText = txtInput.Text.Trim();
+
+        #region jugad
+        var splitOpen = new ArrayList();
+        var openScript = false;
+        var openPHP = false;
+        var tempInnermu = new StringBuilder();
+        var totalLength = inputText.Length;
+
+        for (var j = 0; j < totalLength; j++)
+        {
+            int i;
+            var openTagInside = false;
+
+            tempInnermu.Remove(0, tempInnermu.Length);
+
+            for (i = j; i < totalLength; i++)
+            {
+                var c = inputText[i];
+                tempInnermu.Append(c);
+
+                //TODO: space anchor
+                if ((i + 1) >= totalLength) break;
+
+                if (c == '>')
+                {
+                    if (openPHP && inputText[i - 1] == '?')
+                    {
+                        openPHP = false;
+                        if (openTagInside) continue;
+                        break;
+                    }
+                    if (!openScript) break;
+
+                    if (!openTagInside) continue;
+                    openTagInside = false;
+                    break;
+                }
+
+                if (c == '<')
+                {
+                    if (inputText[i + 1] == '?') openPHP = true;
+                    if (openTagInside) continue;
+                    if (openPHP) continue;
+                    if (openScript)
+                    {
+                        if (inputText[i + 1] == '/' &&
+                                  inputText[i + 2].ToString().ToLower() == "s" &&
+                                  inputText[i + 3].ToString().ToLower() == "c" &&
+                                  inputText[i + 4].ToString().ToLower() == "r" &&
+                                  inputText[i + 5].ToString().ToLower() == "i" &&
+                                  inputText[i + 6].ToString().ToLower() == "p" &&
+                                  inputText[i + 7].ToString().ToLower() == "t"
+                                  )
+                        {
+                            openScript = false;
+                            openTagInside = true;
+                            continue;
+                        }
+                        openTagInside = false;
+                        continue;
+                    }
+                    openTagInside = true;
+                    continue;
+                }
+
+                if (inputText[i + 1] == '<' && inputText[i + 2] != ' ' && inputText[i + 2] != '\r' && inputText[i + 2] != '?')
+                {
+                    if (openTagInside) continue;
+                    if (openScript)
+                    {
+                        if (inputText[i + 2] == '/' &&
+                                  inputText[i + 3].ToString().ToLower() == "s" &&
+                                  inputText[i + 4].ToString().ToLower() == "c" &&
+                                  inputText[i + 5].ToString().ToLower() == "r" &&
+                                  inputText[i + 6].ToString().ToLower() == "i" &&
+                                  inputText[i + 7].ToString().ToLower() == "p" &&
+                                  inputText[i + 8].ToString().ToLower() == "t"
+                                  )
+                        {
+                            break;
+                        }
+                        continue;
+                    }
+                    if (openPHP) continue;
+                    break;
+                }
+            }
+            j = i;
+            if (string.IsNullOrEmpty(tempInnermu.ToString().Trim())) continue;
+            splitOpen.Add(tempInnermu.ToString());
+
+            if (tempInnermu.ToString().ToLower().StartsWith("<script"))
+                openScript = true;
+        }
+        #endregion
+
+        var outp = new StringBuilder();
+        var q = new Stack();
+        var content = false;
+
+        // false = close ; true = open
+        var tagState = false;
+        var scriptTagJustParsed = false;
+        for (var loopIndex = 0; loopIndex < splitOpen.Count; loopIndex++)
+        {
+            var unAltered = splitOpen[loopIndex].ToString();
+            if (String.IsNullOrEmpty(unAltered.Trim())) continue;
+
+            if (indentLevel < 0) indentLevel = 0;
+
+            //tOdo : PHP
+            var r = new StringBuilder(unAltered);//.Replace("\r\n", ""));
+
+            string parent;
+            if (r.ToString().StartsWith("</") || r.ToString().StartsWith("<\\/"))
+            {
+                #region "</"
+
+                parent = util.GetTagName(r, true).ToLower();
+                Array arQueue = q.ToArray();
+                Array.Reverse(arQueue);
+                var temp = new Stack(arQueue);
+                var tempIndent = indentLevel;
+
+                scriptTagJustParsed = false;
+
+                if ((!content) && tagState)
+                {
+                    tagState = false;
+                    q.Pop();
+                    --indentLevel;
+                    outp.Append(r);
+                    continue;
+                }
+
+                // pop all invalid and reduce tab level
+                if (q.Count > 0)
+                    while (parent != q.Peek().ToString())
+                    {
+                        q.Pop();
+                        --indentLevel;
+                        if (q.Count == 0 || indentLevel < 0) break;
+                    }
+
+                if (indentLevel <= 0)
+                {
+                    indentLevel = tempIndent;
+                    q = temp;
+                    outp.Append("\r\n" + AddTab(indentLevel) + r);
+                    continue;
+                }
+
+                if (q.Count > 0)
+                    q.Pop();
+
+                outp.Append("\r\n" + AddTab(--indentLevel) + r);
+
+                #endregion
+            }
+            else if (r.ToString().StartsWith("<") && !r.ToString().StartsWith("<?"))
+            {
+                #region <
+
+                tagState = true;
+                content = false;
+                if (r.ToString().StartsWith("<!"))
+                {
+                    outp.Append("\r\n" + AddTab(indentLevel) + r);
+                    tagState = false;
+                    continue;
+                }
+                parent = util.GetTagName(r, false).ToLower();
+
+                if (string.Equals(parent, "ahref", StringComparison.InvariantCultureIgnoreCase))
+                    q.Push("a");
+                if (string.Equals(parent, "?php", StringComparison.InvariantCultureIgnoreCase))
+                    q.Push("?");
+                else
+                    q.Push(parent);
+
+                //while (r.ToString().Contains("  ")) r = r.Replace("  ", " ");
+                r = r.Replace(" = ", "=").Replace("= ", "=").Replace(" =", "=");
+                r = r.Replace(" >", ">");
+
+                if (parent != "script") scriptTagJustParsed = false;
+
+                switch (parent)
+                {
+                    case "body":
+                        outp.Append("\r\n" + AddTab(indentLevel++) + r);
+                        continue;
+                    case "html":
+                        outp.Append("\r\n" + r);
+                        continue;
+                    case "?php":
+                        #region PHP
+                        outp.Append("\r\n");//+ AddTab(indentLevel++));
+                        int identPHP = indentLevel;
+
+                        var phpString = Regex.Split(r.ToString().Replace("\t", ""), @"([;{}])\r\n");
+
+                        while (!splitOpen[loopIndex++].ToString().Contains("?"))
+                        {
+                            foreach (var sd in phpString)
+                            {
+                                string ss = sd;
+
+                                switch (ss.Trim())
+                                {
+
+                                    case ";":
+                                        outp.AppendLine(ss.Trim());
+                                        break;
+                                    default:
+                                        if (!string.IsNullOrEmpty(ss.Trim()))
+                                            outp.Append(AddTab(identPHP) + ss.Trim().Replace("\r\n", "\r\n" + AddTab(identPHP)));
+                                        break;
+                                }
+                            }
+                        }
+                        //outp.Append(AddTab(--indentLevel) + splitOpen[loopIndex]);
+                        q.Pop();
+                        tagState = false;
+                        #endregion
+
+                        continue;
+                    case "style":
+                        #region Style
+                        var formatCSS = chkFormatCss.Checked;
+
+                        outp.Append("\r\n" + AddTab(indentLevel++) + r);
+                        if (!formatCSS)
+                            outp.AppendLine();
+
+                        int styleIndent = indentLevel;
+
+                        var endTagLangStyle = EndTagLanguage(splitOpen, loopIndex + 1, "style");
+                        loopIndex++;
+
+                        while (!splitOpen[loopIndex].ToString().ToLower().Contains(endTagLangStyle))
+                        {
+                            var s = splitOpen[loopIndex++].ToString();
+
+                            if (!formatCSS)
+                            {
+                                outp.Append(s.Trim());
+                                continue;
+                            }
+
+                            if (string.IsNullOrEmpty(s.Trim()))
+                                continue;
+
+                            var styleString = Regex.Split(s, @"([;{}])");
+                            foreach (var sd in styleString)
+                            {
+                                string ss = sd.Replace("\r\n", "").Replace(":", ": ").Replace(",", ", ");
+
+                                ss = RemoveDoubleWhiteSpace(ss);
+                                switch (ss.Trim())
+                                {
+                                    case "{":
+                                        outp.AppendLine(" " + ss);
+                                        styleIndent++;
+                                        break;
+                                    case "}":
+                                        outp.AppendLine(AddTab(--styleIndent) + ss.Trim());
+                                        break;
+                                    case ";":
+                                        outp.AppendLine(ss.Trim());
+                                        break;
+                                    default:
+                                        if (!string.IsNullOrEmpty(ss.Trim()))
+                                            outp.Append(AddTab(styleIndent) + ss.Trim());
+                                        break;
+                                }
+                            }
+                        }
+                        outp.Append("\r\n" + AddTab(--indentLevel) + splitOpen[loopIndex]);
+                        q.Pop();
+                        tagState = false;
+                        #endregion
+                        continue;
+
+                    case "script":
+                        #region "JavaSscript"
+
+                        int i = loopIndex++;
+
+                        var scriptContent = new StringBuilder();
+
+                        var endTagLang = EndTagLanguage(splitOpen, loopIndex, "script");
+
+                        while (!splitOpen[loopIndex].ToString().ToLower().Contains(endTagLang))
+                        {
+                            scriptContent.Append(splitOpen[loopIndex]);
+                            if (++loopIndex >= splitOpen.Count)
+                            {
+                                loopIndex--;
+                                break;
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(scriptContent.ToString().Trim()))
+                        {
+                            if (!scriptTagJustParsed) outp.AppendLine();
+                            outp.Append("\r\n" + AddTab(indentLevel) + r);
+
+                            if (!chkFormatJavascript.Checked)
+                            {
+                                outp.Append(scriptContent.ToString().TrimEnd());
+                                outp.AppendLine("\r\n" + AddTab(indentLevel) + splitOpen[loopIndex]);
+                                continue;
+                            }
+
+                            indentLevel++;
+                            int indentSc = indentLevel;
+                            var scriptc = Regex.Split(scriptContent.ToString(), @"([;{}])", RegexOptions.IgnoreCase);
+
+                            foreach (string d in from s in scriptc
+                                                 where !string.IsNullOrEmpty(s.Trim())
+                                                 select s.Replace("\t", "").Trim())
+                            {
+                                string s = d;
+
+                                switch (s)
+                                {
+                                    case "{":
+                                        outp.Append("\r\n" + AddTab(indentSc++) + s);
+                                        break;
+                                    case "}":
+                                        outp.Append("\r\n" + AddTab(--indentSc) + s);
+                                        break;
+                                    case ";":
+                                        outp.Append(s);
+                                        break;
+                                    case "(":
+                                        outp.Append(s);
+                                        break;
+                                    case ")":
+                                        outp.Append(s);
+                                        break;
+                                    default:
+                                        var c = Regex.Split(s, @"(\r\n)", RegexOptions.IgnoreCase);
+                                        foreach (var s1 in c)
+                                        {
+                                            if (string.IsNullOrEmpty(s1.Trim())) continue;
+                                            outp.Append("\r\n" + AddTab(indentSc) + s1.Trim());
+                                        }
+
+                                        break;
+                                }
+                            }
+                            outp.AppendLine("\r\n" + AddTab(--indentLevel) + splitOpen[loopIndex]);
+                        }
+                        else
+                        {
+                            outp.AppendLine();
+                            if (!scriptTagJustParsed) outp.AppendLine();
+                            outp.AppendLine(AddTab(indentLevel) + splitOpen[i].ToString().Replace("\r\n", " ").Replace("  ", " ")
+                                + RemoveDoubleWhiteSpace(splitOpen[i + 1].ToString().Replace("\r\n", " ")));
+                        }
+
+                        q.Pop();
+                        tagState = false;
+                        scriptTagJustParsed = true;
+                        #endregion
+                        continue;
+
+                    case "input":
+                    case "!doctype":
+                    case "param":
+                    case "area":
+                    case "layer":
+                    case "hr":
+                    case "br":
+                    case "meta":
+                    case "link":
+                    case "img":
+                        content = true;
+                        q.Pop();
+                        outp.Append("\r\n" + AddTab(indentLevel) + RemoveDoubleWhiteSpace(r.ToString()).Replace("\r\n", "").Replace("\t", ""));
+                        continue;
+
+                    default:
+                        if (r.ToString().TrimEnd().EndsWith("/>"))
+                        {
+                            q.Pop();
+                            outp.Append("\r\n" + AddTab(indentLevel) + r);
+                            continue;
+                        }
+                        outp.Append("\r\n" + AddTab(indentLevel++) + r);
+                        break;
+                }
+                #endregion
+            }
+            else if (r.ToString().StartsWith("<") && r.ToString().StartsWith("<?"))
+            {
+                outp.Append("\r\n" + AddTab(indentLevel));
+                outp.Append(r.Replace("\r\n", "\r\n" + AddTab(indentLevel)));
+            }
+            else
+            {
+                #region Text Block
+                tagState = true;
+
+                if (chkAscii.Checked)
+                    r = new StringBuilder(Server.HtmlEncode(r.ToString()).Replace("&amp;", "&"));
+
+                if (q.Count != 0)
+                {
+                    switch (q.Peek().ToString().ToLower())
+                    {
+                        case "title":
+                        case "meta":
+                        case "label":
+                        //case "a":
+                        case "b":
+                        case "strong":
+                        case "option":
+                            content = false;
+                            break;
+                        default:
+                            content = true;
+                            break;
+                    }
+                }
+
+                outp.Append(((content) ? "\r\n" : "") +
+                BlockText(indentLevel, RemoveDoubleWhiteSpace(r.ToString()).Replace("\r\n", " "), content)
+                );
+                #endregion
+            }
+        }
+
+        txtInput.Text = outp.ToString();
+        Encoding encoding = Encoding.UTF8;
+        lblSize.Text = "Code size : <font color='red'>" + (encoding.GetByteCount(outp.ToString()) / 1000).ToString("#,##0") + " Kb</font>";
+        Label3.Text = "Processing Time : <font color='red'>" + st.ElapsedMilliseconds + " ms</font>";
+    }
+
+    private static string RemoveDoubleWhiteSpace(string input)
+    {
+        var output = new StringBuilder(input);
+        while (output.ToString().Contains("  "))
+            output = output.Replace("  ", " ");
+        return output.Replace("\t", " ").ToString();
+    }
+    private static string EndTagLanguage(ArrayList splitOpen, int loopIndex, string tag)
+    {
+        var endTagLang = String.Empty;
+        while (!splitOpen[loopIndex++].ToString().ToLower().Contains(tag))
+        {
+            if (loopIndex >= splitOpen.Count) break;
+            if (splitOpen[loopIndex].ToString().ToLower().Contains("</" + tag + ">"))
+            {
+                endTagLang = "</" + tag + ">";
+                break;
+            }
+            else if (splitOpen[loopIndex].ToString().ToLower().Contains(tag + ">"))
+            {
+                endTagLang = tag + ">";
+                break;
+            }
+            else if (splitOpen[loopIndex].ToString().ToLower().Contains(tag))
+            {
+                endTagLang = tag;
+                break;
+            }
+        }
+        return ((endTagLang != "") ? endTagLang : "</" + tag + ">");
+    }
+}
